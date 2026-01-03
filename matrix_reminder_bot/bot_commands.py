@@ -149,9 +149,12 @@ class Command(object):
         logger.debug("Parsing cron command arguments: %s", args_str)
 
         # Split into cron tab and reminder text
-        cron_tab, reminder_text = self._split_command_args(
-            args_str, allow_empty_text=allow_empty_text
-        )
+        try:
+            cron_tab, reminder_text = self._split_command_args(
+                args_str, allow_empty_text=allow_empty_text
+            )
+        except ValueError as exc:
+            raise CommandSyntaxError() from exc
 
         return cron_tab.strip(), reminder_text.strip()
 
@@ -171,9 +174,12 @@ class Command(object):
         args_str = " ".join(self.args)
         logger.debug("Parsing command arguments: %s", args_str)
 
-        time_str, reminder_text = self._split_command_args(
-            args_str, allow_empty_text=allow_empty_text
-        )
+        try:
+            time_str, reminder_text = self._split_command_args(
+                args_str, allow_empty_text=allow_empty_text
+            )
+        except ValueError as exc:
+            raise CommandSyntaxError() from exc
         logger.debug("Got time: %s", time_str)
 
         # Clean up the input
@@ -201,9 +207,12 @@ class Command(object):
             logger.debug("Recurring timedelta: %s", recurse_timedelta)
 
             # Extract the start time
-            time_str, reminder_text = self._split_command_args(
-                reminder_text, allow_empty_text=allow_empty_text
-            )
+            try:
+                time_str, reminder_text = self._split_command_args(
+                    reminder_text, allow_empty_text=allow_empty_text
+                )
+            except ValueError as exc:
+                raise CommandSyntaxError() from exc
             reminder_text = reminder_text.strip()
 
             logger.debug("Start time: %s", time_str)
