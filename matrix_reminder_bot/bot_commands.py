@@ -217,12 +217,13 @@ class Command(object):
         self, args_str: str, allow_empty_text: bool
     ) -> Tuple[str, str]:
         """Split command args into the time/cron segment and reminder text."""
-        try:
-            return args_str.split(";", maxsplit=1)
-        except ValueError:
+        parts = args_str.split(";", maxsplit=1)
+        if len(parts) == 1:
             if allow_empty_text:
                 return args_str, ""
             raise CommandSyntaxError()
+
+        return parts[0], parts[1]
 
     def _allow_missing_reminder_text(self) -> bool:
         """Whether the current command may omit reminder text entirely."""
